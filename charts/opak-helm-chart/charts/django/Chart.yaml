@@ -1,6 +1,6 @@
 apiVersion: v2
-name: django
-description: Generic Django + Celery Helm Chart
+name: opak-landingpage
+description:  Django website
 
 # A chart can be either an 'application' or a 'library' chart.
 #

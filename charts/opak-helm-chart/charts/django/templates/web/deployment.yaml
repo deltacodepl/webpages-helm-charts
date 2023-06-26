@@ -75,7 +75,7 @@ spec:
             - name: DJANGO_ALLOWED_HOSTS
               value: '$(HOST_IP),$(POD_IP)'
 {{- if .Values.postgresql.enabled }}
-            - name: DB_PASSWORD
+            - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ default (include "django.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}

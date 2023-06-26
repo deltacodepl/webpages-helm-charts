@@ -1,57 +1,53 @@
 {{- if .Values.worker.enabled -}}
+{{- if .Values.beat.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "django.fullname" . }}-worker
+  name: {{ include "django.fullname" . }}-beat
   labels:
     {{- include "django.labels" . | nindent 4 }}
-    app.kubernetes.io/component: worker
+    app.kubernetes.io/component: beat
 spec:
-  replicas: {{ .Values.worker.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "django.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: worker
+      app.kubernetes.io/component: beat
   template:
     metadata:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.image.tag }}"
-        {{- if .Values.worker.podAnnotations }}
-        {{- include "common.tplvalues.render" ( dict "value" .Values.worker.podAnnotations "context" $ ) | nindent 8 }}
+        {{- if .Values.beat.podAnnotations }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.beat.podAnnotations "context" $ ) | nindent 8 }}
         {{- end }}
       labels:
         {{- include "django.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: worker
+        app.kubernetes.io/component: beat
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "django.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if .Values.worker.args }}
-          args: {{- toYaml .Values.worker.args | nindent 10}}
+          {{- if .Values.beat.args }}
+          args: {{- toYaml .Values.beat.args | nindent 10}}
           {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.worker.livenessProbe }}
-          livenessProbe:
-            {{- .Values.worker.livenessProbe | toYaml | nindent 12 }}
-          {{- end }}
           resources:
-            {{- toYaml .Values.worker.resources | nindent 12 }}
+            {{- toYaml .Values.beat.resources | nindent 12 }}
           env:
             - name: SERVER_ROLE
-              value: "worker"
+              value: "beat"
 {{- if .Values.postgresql.enabled }}
-            - name: DB_PASSWORD
+            - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ default (include "django.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
@@ -66,16 +62,17 @@ spec:
             {{- end }}
             - configMapRef:
                 name: {{ include "django.fullname" . }}
-      {{- with .Values.worker.nodeSelector }}
+      {{- with .Values.beat.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.worker.affinity }}
+      {{- with .Values.beat.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.worker.tolerations }}
+      {{- end }}
+      {{- with .Values.beat.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
+{{- end }}
 {{- end }}
