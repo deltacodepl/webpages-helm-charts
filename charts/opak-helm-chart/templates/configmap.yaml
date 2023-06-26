@@ -8,10 +8,10 @@ metadata:
     "helm.sh/hook-weight": "-1"
 data:
 {{- if .Values.postgresql.enabled }}
-  DB_HOST: {{ include "django.postgresql.host" . | quote }}
-  DB_USER: {{ include "django.postgresql.username" . | quote }}
-  DB_NAME: {{ include "django.postgresql.name" . | quote }}
-  DB_PORT: {{ include "django.postgresql.port" . | quote }}
+  DATABASE_HOST: {{ include "django.postgresql.host" . | quote }}
+  DATABASE_USER: {{ include "django.postgresql.username" . | quote }}
+  DATABASE_NAME: {{ include "django.postgresql.name" . | quote }}
+  DATABASE_PORT: {{ include "django.postgresql.port" . | quote }}
 {{- end }}
 {{- range $k, $v := .Values.env.normal }}
   {{ $k }}: {{ $v | quote }}

@@ -43,7 +43,7 @@ spec:
             value: {{ .Values.env.secret.DATABASE_URL }}
 {{- end }}
 {{- if .Values.postgresql.enabled }}
-          - name: DB_PASSWORD
+          - name: DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ include "django.postgresql.fullname" . }}
