@@ -1,0 +1,61 @@
+{{- if .Values.preInstall.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "django.fullname" . }}
+  labels:
+    {{- include "django.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "0"
+    checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    tag: "{{ .Values.image.tag }}"
+spec:
+  activeDeadlineSeconds: {{ default 900 .Values.preInstall.activeDeadlineSeconds }}
+  template:
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      restartPolicy: Never
+      containers:
+      - name: pre-install-job
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh", "-c"]
+        args:
+          - python manage.py migrate --no-input;
+            python manage.py createsuperuser --noinput || true;
+        env:
+          - name: DJANGO_SUPERUSER_USERNAME
+            value: {{ .Values.env.normal.DJANGO_SUPERUSER_USERNAME }}
+          - name: DJANGO_SUPERUSER_EMAIL
+            value: {{ .Values.env.normal.DJANGO_SUPERUSER_EMAIL }}  
+          - name: DJANGO_SUPERUSER_PASSWORD
+            value: {{ .Values.env.normal.DJANGO_SUPERUSER_PASSWORD }}
+          - name: DEBUG
+            value: "False"
+{{- if .Values.env.secret.DATABASE_URL }}
+          - name: DATABASE_URL
+            value: {{ .Values.env.secret.DATABASE_URL }}
+{{- end }}
+{{- if .Values.postgresql.enabled }}
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django.postgresql.fullname" . }}
+                key: password
+{{- end }}
+          - name: SECRET_KEY
+            value: {{ required "env.secret.SECRET_KEY is a required value." .Values.env.secret.SECRET_KEY }}
+        {{- range $k, $v := .Values.env.normal }}
+          - name: {{ $k }}
+            value: {{ $v | quote }}
+        {{- end }}
+        envFrom:
+          - configMapRef:
+              name: {{ include "django.fullname" . }}
+{{- end }}
