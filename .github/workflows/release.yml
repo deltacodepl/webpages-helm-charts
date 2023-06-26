@@ -4,13 +4,19 @@ on:
   push:
     branches:
       - main
+      
+permissions: read-all
 
 jobs:
   release:
+    permissions:
+      contents: write # for helm/chart-releaser-action to push chart release and create a release
+      packages: write # for helm/chart-releaser-action to push chart release and create a release
+      id-token: write # for helm/chart-releaser-action to push chart release and create a release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.5.3
         with:
           fetch-depth: 0
 
@@ -22,7 +28,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
-          version: v3.5.0
+          version: v3.8.1
 
       - name: Adding Helm Dependencies
         run: |
