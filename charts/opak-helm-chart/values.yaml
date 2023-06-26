@@ -21,6 +21,7 @@ env:
     DJANGO_SUPERUSER_USERNAME: "admin"
     DJANGO_SUPERUSER_EMAIL: "admin@retryjoin.pl"
     DJANGO_SUPERUSER_PASSWORD: "password"
+    FRONTEND_URL: "http://localhost:3000"
   secret:
     SECRET_KEY: '#p7nnxb7y^yq8ahfw5%$xh=f8=&1y*5+a5($8w_f7kw!-qig(j'
     
