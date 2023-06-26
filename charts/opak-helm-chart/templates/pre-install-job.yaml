@@ -27,21 +27,20 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/sh", "-c"]
         args:
-          - python manage.py migrate --no-input;
-            python manage.py createsuperuser --noinput || true;
+          - echo -en 'waiting for postgress...';
+            while ! nc -z {{ include "django.postgresql.host" . | quote }} {{ include "django.postgresql.port" . | quote }};
+            do
+              sleep 0.2;
+            done;
+            python manage.py collectstatic --noinput;
+            python manage.py migrate --no-input;
+            python manage.py createsuperuser --noinput;
         env:
-          - name: DJANGO_SUPERUSER_USERNAME
-            value: {{ .Values.env.normal.DJANGO_SUPERUSER_USERNAME }}
-          - name: DJANGO_SUPERUSER_EMAIL
-            value: {{ .Values.env.normal.DJANGO_SUPERUSER_EMAIL }}  
-          - name: DJANGO_SUPERUSER_PASSWORD
-            value: {{ .Values.env.normal.DJANGO_SUPERUSER_PASSWORD }}
-          - name: DEBUG
-            value: "False"
 {{- if .Values.env.secret.DATABASE_URL }}
           - name: DATABASE_URL
             value: {{ .Values.env.secret.DATABASE_URL }}
 {{- end }}
+
 {{- if .Values.postgresql.enabled }}
           - name: DATABASE_PASSWORD
             valueFrom:
@@ -50,7 +49,12 @@ spec:
                 key: password
 {{- end }}
           - name: SECRET_KEY
-            value: {{ required "env.secret.SECRET_KEY is a required value." .Values.env.secret.SECRET_KEY }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django.fullname" . }}
+                key: SECRET_KEY
+          # - name: SECRET_KEY
+          #   value: {{ required "env.secret.SECRET_KEY is a required value." .Values.env.secret.SECRET_KEY }}
         {{- range $k, $v := .Values.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}
