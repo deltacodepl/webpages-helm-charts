@@ -27,8 +27,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/sh", "-c"]
         args:
-          - sleep 5;
-            echo -en 'running migrations';
+          - echo -en 'running migrations';
             python manage.py migrate --no-input;
             python manage.py createsuperuser --noinput || true;
         env:
