@@ -27,7 +27,8 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/sh", "-c"]
         args:
-          - python manage.py migrate --no-input;
+          - sleep 5;
+            python manage.py migrate --no-input;
             python manage.py createsuperuser --noinput || true;
         env:
           - name: DJANGO_SUPERUSER_USERNAME
