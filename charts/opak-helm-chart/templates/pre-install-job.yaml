@@ -39,7 +39,7 @@ spec:
           - name: DJANGO_SUPERUSER_PASSWORD
             value: {{ .Values.env.normal.DJANGO_SUPERUSER_PASSWORD }}
           - name: DEBUG
-            value: "False"
+            value: "True"
 {{- if .Values.env.secret.DATABASE_URL }}
           - name: DATABASE_URL
             value: {{ .Values.env.secret.DATABASE_URL }}
