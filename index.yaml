@@ -20,4 +20,24 @@ entries:
     urls:
     - https://github.com/deltacodepl/webpages-helm-charts/releases/download/opak-landingpage-0.1.5/opak-landingpage-0.1.5.tgz
     version: 0.1.5
-generated: "2023-06-26T17:39:56.2725324Z"
+  opak-page:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-07-05T16:54:43.213645019Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~12.5.8
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~17.11.6
+    description: Django website
+    digest: 9b84ee1f0b1e2f9b1cb920247002a5db45bfd8026e87530c930fe39b9e094d39
+    name: opak-page
+    type: application
+    urls:
+    - https://github.com/deltacodepl/webpages-helm-charts/releases/download/opak-page-0.1.5/opak-page-0.1.5.tgz
+    version: 0.1.5
+generated: "2023-07-05T16:54:43.213652519Z"
