@@ -209,11 +209,7 @@ postgresql:
   primary:
     initdb:
       scripts:
-        01-init.sql: |
-          CREATE DATABASE "glock" WITH OWNER user;
-          CREATE DATABASE "edc" WITH OWNER postgres;
-          CREATE ROLE glockie WITH LOGIN PASSWORD 'edc';
-          CREATE DATABASE chirpstack_as_events WITH OWNER postgres;
-          CREATE EXTENSION pg_trgm;
-          CREATE EXTENSION hstore;
-
+        01-init.sql: |-
+          CREATE DATABASE glock WITH ENCODING = 'UTF8' OWNER = user CONNECTION LIMIT = 100;
+        02.sh: |-
+          psql -d database -U user -f docker-entrypoint-initdb.d/01-init.sql
