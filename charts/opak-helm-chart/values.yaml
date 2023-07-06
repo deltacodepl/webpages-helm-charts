@@ -202,10 +202,10 @@ redis:
 postgresql:
   enabled: true
   auth:
-   postgresPassword: "postgres-password"
-   username: "user"
-   password: "password"
-   database: "database"
+    postgresPassword: "postgres-password"
+    username: "user"
+    password: "password"
+    database: "database"
   initdbScripts:
     init: |  
       SET statement_timeout = 0;
