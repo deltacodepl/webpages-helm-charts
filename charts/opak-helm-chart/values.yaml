@@ -206,7 +206,14 @@ postgresql:
     username: "user"
     password: "password"
     database: "database"
-  initdbScripts:
-    init.sql: |
-      CREATE DATABASE "database" WITH OWNER user;
+  primary:
+    initdb:
+      scripts:
+        01-init.sql: |
+          CREATE DATABASE "glock" WITH OWNER user;
+          CREATE DATABASE "edc" WITH OWNER postgres;
+          CREATE ROLE glockie WITH LOGIN PASSWORD 'edc';
+          CREATE DATABASE chirpstack_as_events WITH OWNER postgres;
+          CREATE EXTENSION pg_trgm;
+          CREATE EXTENSION hstore;
 
