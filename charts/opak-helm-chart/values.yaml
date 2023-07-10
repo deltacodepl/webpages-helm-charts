@@ -177,7 +177,7 @@ flower:
           - path: /
             pathType: ImplementationSpecific
     tls:
-      - secretName: achilles-pl-tls
+      secretName: achilles-pl-tls
       hosts:
       - api.achilles.pl
 
