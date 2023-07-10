@@ -107,9 +107,9 @@ web:
                 port:
                   number: 8000
     tls:
-      secretName: achilles-pl-tls
-      hosts:
-      - api.achilles.pl
+      - hosts:
+        - api.achilles.pl
+        secretName: achilles-pl-tls
 
 worker:
   enabled: false
