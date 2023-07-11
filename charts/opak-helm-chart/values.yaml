@@ -17,11 +17,15 @@ preInstall:
 
 env:
   normal:
-    DEBUG : "True"
+    DEBUG : False
     DJANGO_SUPERUSER_USERNAME: "admin"
     DJANGO_SUPERUSER_EMAIL: "admin@retryjoin.pl"
-    DJANGO_SUPERUSER_PASSWORD: "password"
-    FRONTEND_URL: "http://localhost:3000"
+    DJANGO_SUPERUSER_PASSWORD: ""
+    USE_S3: True
+    AWS_ACCESS_KEY_ID: ""
+    AWS_SECRET_ACCESS_KEY: ""
+    AWS_STORAGE_BUCKET_NAME: "opak-media"
+    FRONTEND_URL: "https://hello.opakowaniareklamowe.pl"
   secret:
     SECRET_KEY: '#p7nnxb7y^yq8ahfw5%$xh=f8=&1y*5+a5($8w_f7kw!-qig(j'
     
@@ -49,6 +53,7 @@ web:
     #   done;
     - python manage.py makemigrations --no-input;
       python manage.py migrate;
+      python manage.py collectstatic --noinput;
       gunicorn --bind 0.0.0.0:8000 -w 4 --limit-request-line 6094 --access-logfile - config.wsgi:application
 
   budget:
@@ -1101,16 +1106,6 @@ postgresql:
           INSERT INTO public.auth_permission VALUES (46, 'Can change Inquiry', 12, 'change_inquiry');
           INSERT INTO public.auth_permission VALUES (47, 'Can delete Inquiry', 12, 'delete_inquiry');
           INSERT INTO public.auth_permission VALUES (48, 'Can view Inquiry', 12, 'view_inquiry');
-
-
-          --
-          -- TOC entry 3491 (class 0 OID 16434)
-          -- Dependencies: 222
-          -- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: user
-          --
-
-          INSERT INTO public.auth_user VALUES (10, 'pbkdf2_sha256$260000$aZoypDqRB2YaUg4GHZDPja$a7AmXvbZhWQJeAHiIaZ0lS6cG2FxyRItT8uCkV/BguY=', NULL, true, 'admin', '', '', 'hello@retryjoin.pl', true, true, '2023-07-06 18:39:45.809803+00');
-
 
           --
           -- TOC entry 3493 (class 0 OID 16443)
