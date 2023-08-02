@@ -73,7 +73,7 @@ spec:
                 fieldRef:
                   fieldPath: status.hostIP
             - name: DJANGO_ALLOWED_HOSTS
-              value: '$(HOST_IP),$(POD_IP),192.168.1.75,api.achilles.pl'
+              value: '$(HOST_IP),$(POD_IP),192.168.1.75,api.opakowaniareklamowe.pl'
 {{- if .Values.postgresql.enabled }}
             - name: DATABASE_PASSWORD
               valueFrom:
